@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.9.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        padding: 1px;
+        text-align: center;
+        font-family: cursive;
+        background-color: #1e1e1e;
+        color: #dadada;
+      }
+      .checkboxes {
+        margin-top: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .checkbox {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 1px solid #303030;
+        border-radius: 3px;
+        background-color: #000000;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .checkbox:checked {
+        background-color: #ff8c00;
+        border: none;
+      }
+
+      .checkbox:checked::after {
+        content: "";
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        width: 4px;
+        height: 9px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>2000 checkbox</h1>
+
+    <div class="checkboxes" id="checkboxes"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      createCheckboxes();
+      function createCheckboxes() {
+        const checkBoxes = document.getElementById("checkboxes");
+
+        for (let i = 1; i <= 2000; i++) {
+          const checkBox = document.createElement("input");
+          checkBox.type = "checkbox";
+          checkBox.id = `${i}`;
+          checkBox.value = `${i}`;
+          checkBox.className = "checkbox";
+          checkBoxes.appendChild(checkBox);
+
+          checkBox.style.marginLeft = "1px";
+          checkBox.style.marginTop = "1px";
+        }
+        selectCheckbox();
+      }
+
+      function selectCheckbox() {
+        const checkBoxInput = document.querySelectorAll(".checkbox");
+        checkBoxInput.forEach((item) => {
+          item.addEventListener("click", (e) => {
+            socket.emit("user:check", e.target.id);
+          });
+        });
+      }
+
+      socket.on("socket:message", (data) => {
+        const isChecked = document.getElementById(data);
+        if (isChecked.checked) {
+          isChecked.checked = false;
+        } else {
+          isChecked.checked = true;
+        }
+      });
+    </script>
+  </body>
+</html>
