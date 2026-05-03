@@ -58,10 +58,51 @@
         border-width: 0 2px 2px 0;
         transform: rotate(45deg);
       }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #ff4444;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 5px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .notification.hide {
+        animation: slideOut 0.3s ease;
+      }
+
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
     </style>
   </head>
   <body>
-    <h1>2000 checkbox</h1>
+    <h1>Multiple checkboxs</h1>
 
     <div class="checkboxes" id="checkboxes"></div>
 
@@ -70,7 +111,6 @@
       const socket = io();
 
       const checkBoxes = document.getElementById("checkboxes");
-      const CHECKBOXES_COUNT = 100;
 
       window.addEventListener("load", async () => {
         const response = await fetch("/checkboxes", { method: "GET" });
@@ -95,10 +135,19 @@
 
       socket.on("server:error", (data) => {
         const errorMessage = data.error;
+        
+        const notification = document.createElement("div");
+        notification.className = "notification";
+        notification.textContent = errorMessage;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.classList.add("hide");
+          setTimeout(() => notification.remove(), 300);
+        }, 5000);
       })
 
       socket.on("socket:message", (data) => {
-        console.log(data);
         const { index, checked } = data;
         const input = document.getElementById(index);
         if (input) {

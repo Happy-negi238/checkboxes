@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "docker-up": "docker compose up -d",
+    "docket-down": "docker down"
   },
   "keywords": [],
   "author": "",
