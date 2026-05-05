@@ -1,9 +1,7 @@
 import Redis from "ioredis";
 
 function createRedisConnection() {
-  return new Redis(process.env.REDIS_URL, {
-    maxRetriesPerRequest: null,
-  });
+  return new Redis(process.env.REDIS_URL);
 }
 
 export const redis = createRedisConnection();
